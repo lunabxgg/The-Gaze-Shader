@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SpriteSheet eye
+  m_Shader: {fileID: 4800000, guid: d848d83e7c0763b4f93c4f72ec4b5339, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _BACKFACE_CULLING
+  - _GAZE_ON
+  - _LIGHTING_EFFECT
+  - _NORMAL_MAP
+  - _USE_LIGHT_VOLUME
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _GifTexture:
+        m_Texture: {fileID: 2800000, guid: f72ff1ea207018f4092aed6d9ea359fe, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: ba50a1a82e4201f4298f5d56e4473122, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: 03aea19ab08681343a05053022fa4741, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BackfaceCulling: 1
+    - _Brightness: 1
+    - _Columns: 11
+    - _ExtraRotX: 0
+    - _ExtraRotY: 0
+    - _ExtraRotZ: 0
+    - _FixTransp: 0
+    - _Gaze: 1
+    - _LightVolumeIntensity: 1
+    - _LightingEffect: 1
+    - _ManualFrame: 1
+    - _MaxDistance: 15
+    - _NormalStrength: 1
+    - _PlayMode: 0
+    - _RandomRotXVariation: 0
+    - _RandomRotYVariation: 0
+    - _RandomRotZVariation: 0
+    - _Rows: 10
+    - _ScaleVariation: 1
+    - _ScaleX: 1
+    - _ScaleY: 1
+    - _SingleAxisGaze: 0
+    - _SpecularBrightness: 0.5
+    - _SpecularSharpness: 20
+    - _SpeedChangeMode: 0
+    - _SpeedChangeRate: 1
+    - _SpeedFromZero: 0
+    - _StartFrameRandomization: 0
+    - _StartTime: 0
+    - _TotalFrames: 110
+    - _UVx: 0
+    - _UVy: 0
+    - _UseLightVolume: 1
+    - _UseNormalMap: 1
+    - _WeakenDistanceGaze: 0
+    - _fps: 12
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
