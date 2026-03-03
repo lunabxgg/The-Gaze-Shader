@@ -2,7 +2,7 @@
 
 ## 📝 Introduction
 **The Gaze Shader** is a 2D animation rendering and gaze-tracking system tailored for Unity and VRChat creators. It not only enables your GIFs or Sprite Sheets to play vividly in 3D space but also automatically tracks the player's perspective, creating an interactive sensation of "being watched." Combined with a built-in format conversion tool, one-click normal map generation, and perfect support for [VRChat Light Volumes](https://github.com/REDSIM/VRCLightVolumes) , it empowers you to effortlessly implement highly expressive dynamic elements in your scenes.
-![](./logo/gaze%20booth.gif)
+![](./logo/GAZE.gif)
 
 ## ✨ Feature Overview
 * **Built-in Efficient Converter:** Say goodbye to cumbersome external software. Convert GIFs into high-quality "Texture Arrays" or highly performant "Sprite Sheets" with just one click.
