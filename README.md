@@ -12,6 +12,18 @@
 
 ---
 
+## 📦 Installation & Quick Start
+
+**Installation Method:**
+1. Go to the **Releases** page on the right side of this GitHub repository.
+2. Download the latest `TheGazeShader_v1.0.unitypackage` file.
+3. Drag and drop the downloaded file directly into your Unity project's `Assets` window to import it.
+
+> 💡 **Sample Scene:** > If you want to preview the effects immediately after importing, you can open the following sample scene:
+> `Assets/@Luna/gaze gif shader/sample/gaze.unity`
+
+---
+
 ## 📖 User Manual
 
 To help you get started quickly, the layout of this manual perfectly matches the functional areas in the Material Inspector panel. Please read along while checking the UI.
@@ -54,6 +66,19 @@ This system provides the following rendering pipeline variants to suit different
 1. **Gaze Gif (Array Version):** Based on `Texture2DArray`, suitable for long animation sequences.
 2. **Gaze GIF SpriteSheet (Transparent Version):** Based on the `Transparent` queue, supports Alpha blending, suitable for glowing gradients, smoke, and other translucent effects.
 3. **Gaze GIF SpriteSheet Cutout (Cutout Version):** Based on `AlphaTest` culling and depth writing (`ZWrite On`). **Recommended for pixel art, UI icons, and other hard-edged images.** It avoids layer penetration issues with translucent objects, supports correct shadow casting, and has lower rendering overhead.
+
+---
+
+## 🤝 Attribution
+
+It would be greatly appreciated if you credit this shader in your VRChat world or project. This helps users know they can use avatars with this shader and supports the growth of this asset in the VRChat community!
+
+You can include a message like this in your world's credit board or project documentation:
+
+> This world uses **The Gaze Shader** for dynamic 2D animations by @咸鱼子Luna.  
+> GitHub: https://github.com/lunabxgg/The-Gaze-Shader
+
+*You're not required to include this message for free/personal use—it's entirely optional. But if you do, thank you for your support!*
 
 ---
 
