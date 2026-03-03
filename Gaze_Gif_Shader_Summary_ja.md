@@ -93,53 +93,56 @@
 
 ### ステップ 1: GIF準備
 
-1. GIFファイルを用意（透過対応）。
-2. `Assets/` フォルダに配置。
-3. インスペクタでインポートタイプを **Texture** に設定。
+1. GIFファイルを用意します（透過対応）。
+2. `Assets/` フォルダに配置します。
+3. インスペクタでインポートタイプを **Texture** に設定します。
 
 ### ステップ 2: マテリアル作成
 
 #### 方法A – SpriteSheet（初心者向け）
 
-1. 右クリック → Create → Material。
+1. プロジェクトウィンドウで右クリック → Create → Material。
 2. シェーダーに `@Luna/Gaze GIF SpriteSheet` を選択。
-3. インスペクタで：
-   - GIFを "GIF Source" にドラッグ。
-   - **Generate Sprite Sheet** ボタンをクリック。
-   - Shaderが MainTex、Columns、Rows、TotalFrames を自動設定。
+3. インスペクタで:
+   - GIFを **GIF Source** フィールドへドラッグ。
+   - **Generate Sprite Sheet** をクリック。
+   - スクリプトが _MainTex_, _Columns_, _Rows_, _TotalFrames_ を自動設定。
 
 #### 方法B – TextureArray（上級者向け）
 
-1. 同様にマテリアルを作成。
-2. `@Luna/Gaze Gif` シェーダーを選択。
-3. ツールメニューから *GIF to Texture Array* を選択。
-   - 解像度を指定して生成。
+1. 上と同様にマテリアルを作成。
+2. シェーダーに `@Luna/Gaze Gif` を選択。
+3. マテリアルインスペクタの **Tool** メニューを開く:
+   - *GIF to Texture Array* を選択。
+   - 解像度（256‑2048）を選び、**Convert** をクリック。
+   - すべてのフレームを含む Texture2DArray アセットが保存される。
 
 ### ステップ 3: パラメータ設定
 
 ```
-基本設定:
-├─ FPS: アニメレート（通常10‑24）
+基本 (必須):
+├─ FPS (フレームレート): 1‑60（通常10‑24）
 ├─ Play Mode: Loop/Once/Random/Manual
-└─ Color: ティント色
+└─ Color: ティントおよびアルファ
 
-凝視:
-├─ Gaze: 追跡ON/OFF
-├─ Single Axis Gaze: 軸指定
-└─ Weaken Distance Gaze: 距離で弱める
+Gaze:
+├─ _Gaze_: カメラ追跡の有無
+├─ _SingleAxisGaze_: All/X/Y/Z 軸
+└─ _WeakenDistanceGaze_: 距離による減衰
 
-距離速度:
-├─ Speed Change Mode
-├─ Speed Change Rate
-└─ Max Distance
+Distance Speed:
+├─ _SpeedChangeMode_: Uniform/Accelerate/Decelerate
+├─ _SpeedChangeRate_: 1‑10 (影響強度)
+└─ _MaxDistance_: 5‑50m の参照距離
 ```
 
 ### ステップ 4: シーンに適用
 
-1. Quad、Plane、任意のメッシュを作成。
-2. レンダラーにマテリアルをアサイン。
-3. プレイして確認。
+1. Quad、Plane、または任意のメッシュを作成。
+2. レンダラーにマテリアルを割り当てる。
+3. Playモードで再生を確認。
 
+---
 ---
 
 ## パラメータ解説
@@ -341,25 +344,33 @@ _FixTransp (Toggle, デフォルトOFF)
 
 ### 🎛️ Gaze Gif Shader GUI
 
-シェーダー用のカスタムインスペクター。
+このカスタムインスペクターは、Gazeシェーダーを使用するマテリアル編集を強化します。
 
 #### 主なセクション
 
-1. **作者情報** – ソーシャルリンク（Booth/X/Bilibili）
-2. **ヘッダー** – Material Managerボタン、シェーダー切り替え
-3. **リソース**
-   - SpriteSheet版: [Generate Sprite Sheet] ボタン
-   - TextureArray版: 変換用ツールメニュー
-4. **エフェクト** – 再生モード、FPS、ランダム開始、速度設定
-5. **固定変化** – 回転、スケール、UV等
-6. **ランダム変化** – スケール＋回転のランダム化
-7. **詳細** – 法線マップ、鏡面、カリングオプション
+1. **作者情報** – ソーシャルリンク（Booth、X、Bilibili）とクレジット。
+2. **ヘッダー** – マテリアルマネージャを開くボタンとシェーダー切り替え。
+3. **リソースセクション**
+
+   - SpriteSheet版：**[Generate Sprite Sheet]** ボタン
+     * 割り当てられたGIFを入力として受け取る
+     * 最適な行×列レイアウトを計算
+     * アトラスを作成
+     * マテリアルのパラメータを自動設定
+   - TextureArray版：**Tool** メニューに
+     * *GIF to Texture Array*（解像度指定）
+     * *GIF to SpriteSheet* などの変換ヘルパーがある。
+
+4. **効果セクション** – 再生モード、FPS、ランダム開始、距離速度など。
+5. **固定変化** – 追加回転、スケール/UV調整。
+6. **ランダム変化** – インスタンスごとのスケール・方向ランダム。
+7. **詳細** – 法線マップ生成、スペキュラ設定、背面カリング、透明修正。
 
 ---
 
 ### 📁 Material Instance Manager
 
-`Tools → @Luna → Gaze Shader Material Manager` から開く。
+`Tools → @Luna → Gaze Shader Material Manager` で開きます。
 
 #### 機能
 
@@ -367,9 +378,9 @@ _FixTransp (Toggle, デフォルトOFF)
 左パネル：
 ├─ 言語選択 (EN/CN/JA)
 ├─ クイック操作
-│  ├─ [Auto Optimize All]
-│  └─ [Refresh Scan]
-└─ テクスチャ別／nullのマテリアル表示
+│  ├─ [Auto Optimize All] – シーン全体を一括最適化
+│  └─ [Refresh Scan] – マテリアルを再スキャン
+└─ テクスチャ別/未設定のマテリアル一覧
 
 右パネル操作：
 ├─ [Create Shared Instance]
@@ -379,30 +390,24 @@ _FixTransp (Toggle, デフォルトOFF)
 
 #### ワークフロー
 
-1. マネージャを開く
-2. [Refresh Scan] をクリック
-3. グループと提案を確認
-4. 自動または手動で最適化
-5. 終了
-
----
+1. マネージャを起動。
+2. **Refresh Scan** をクリック。
+3. グループと推奨を確認。
+4. **Auto Optimize All** または手動で共有インスタンスを作成し、シーンのマテリアルを置換。
+5. 終了後ウィンドウを閉じる。
 
 ### 🎨 Normal Map Generator
 
-法線マップを自動生成。
+テクスチャから法線マップを自動生成します。
 
-#### 使い方
-
-1. マテリアルで `_UseNormalMap` をONに。
+1. **材質で** `_UseNormalMap` をONに。
 2. インスペクタで **[Generate Normal Map]** をクリック。
-3. パラメータを調整：
+3. パラメータを調整:
    - `_NormalStrength` (‑5〜5)
    - `_SpecularSharpness` (1〜100)
    - `_SpecularBrightness` (0〜1)
 
-#### 原理
-
-隣接ピクセルの明暗差を計算し、凹凸法線を生成。バンプマッピングとスペキュラ反射に使用。
+このジェネレータは隣接ピクセルの明暗差を計算し、バンプマップ的な法線テクスチャを生成します。
 
 ---
 
@@ -412,34 +417,35 @@ _FixTransp (Toggle, デフォルトOFF)
 
 - 高速で全プラットフォーム対応。
 - 2つの品質モード：
-  - 高性能: 最大2048×2048
-  - 高品質: 最大4096×4096
+  - **高性能** – 最大 2048×2048、Quest/モバイル向け。
+  - **高品質** – 最大 4096×4096、デスクトップ/ハイエンド向け。
 
 **手順**:
-1. マテリアルでGIFを選択
-2. [Generate Sprite Sheet] をクリック
-3. 品質モードを選択
-4. 最適な格子を計算しアトラスを生成
+1. 材質にGIFを割り当てる。
+2. **Generate Sprite Sheet** をクリック。
+3. 品質モードを選択。
+4. ツールが行/列を計算しアトラスを生成。
 
 | モード | 最大サイズ | 性能 | 用途 |
-|--------|------------|------|------|
+|------|----------|------|------|
 | 高性能 | 2048² | 最速 | モバイル/VRChat大規模 |
 | 高品質 | 4096² | 良好 | デスクトップ/ハイエンド |
 
 #### GIF to Texture Array Converter
 
-- 最高性能、フレーム無制限
-- 対応は限定的
+- 最高性能、フレーム無制限。
+- 対応機種は限定的。
 
 **手順**:
-1. GIFをマテリアルにドラッグ
-2. 解像度を選択 (256–2048)
-3. [Convert] をクリック
-4. Texture2DArray が生成される
+1. GIFを材質にドラッグ。
+2. 解像度を選択 (256–2048)。
+3. **Convert** をクリック。
+4. Texture2DArray アセットが保存される。
 
 解像度ガイド:
+
 ```
-256: 超小・高性能
+256: 超小・最高性能
 512: 推奨バランス
 1024: 高品質
 2048: 最高品質
@@ -451,28 +457,34 @@ _FixTransp (Toggle, デフォルトOFF)
 
 ### ワークフロー1 – プロトタイピング
 
-1. GIFを準備 (<256²推奨)
-2. SpriteSheetマテリアルを作成
-3. GIFをシートに変換
-4. FPS=12‑24、カラー、Gaze=ON設定
-5. Quadに適用してプレビュー
+```
+1. 小さめのGIFを用意（≤256²推奨）。
+2. SpriteSheetマテリアルを作成。
+3. GIFをスプライトシートに変換。
+4. FPS=12‑24、色調、Gaze=ON を設定。
+5. Quad に適用してプレビュー。
+```
 
 ### ワークフロー2 – VRChat最適化
 
-1. リソース策定と分類
-2. 高性能モードで一括変換 (<4096)
-3. Material Managerで共有マテリアル作成
-4. `_UseLightVolume` を有効にし強度調整
-5. Quest上でテストしDrawCall/メモリを監視
+```
+1. リソースを計画し、アセットを分類。
+2. 高性能モード (<4096) でまとめて変換。
+3. Material Manager で共有マテリアルを作成。
+4. _UseLightVolume を有効にし、強度を約0.8‑1.2に設定。
+5. Quest上でテストし、DrawCallとメモリを監視。
+```
 
 ### ワークフロー3 – 高度なビジュアル
 
-1. SpriteSheetから開始
-2. 凝視パラメータと追加回転を微調整
-3. 法線マップを有効にし強度設定
-4. 鏡面設定を構成
-5. 距離速度制御を調整
-6. ランダム変化を追加し複製
+```
+1. SpriteSheetマテリアルから開始。
+2. 凝視パラメータと追加回転を微調整。
+3. 法線マップを有効にし、強度を調整。
+4. 鏡面反射設定を構成。
+5. 距離速度制御を調整。
+6. ランダム変化を追加し、複製。
+```
 
 ---
 
@@ -480,18 +492,32 @@ _FixTransp (Toggle, デフォルトOFF)
 
 ### Light Volume対応
 
-VRChatのLight Volumeは特定領域の光を追加するツール。シェーダーは自動的に反応。
+VRChatのLight Volumeは特定領域の光を追加するツール。Gazeシェーダーはそれに自動的に反応します。
+
+**有効化手順**:
+1. シェーダーで以下を設定:
+   ```
+   _UseLightVolume = ON
+   _LightVolumeIntensity = 1.0 (デフォルト)
+   ```
+2. ワールドに Light Volume を配置するとシェーダーが検知します。
+3. 強度を調整:
+   ```
+   0.0 – 影響なし
+   1.0 – 通常の影響（推奨）
+   2.0 – 目に見える強い変化
+   ```
 
 ### UdonSharpスクリプト
 
 ファイル: `UdonGazeGifTrigger.cs`
 
-アニメ開始時間をプレイヤー間で同期させる。
+アニメ開始時間をプレイヤー間で同期させます。
 
 **使用法**:
-1. Gazeマテリアルを持つオブジェクトにスクリプトを付与
-2. OnEnableで `_StartTime` を `Time.timeSinceLevelLoad` に設定
-3. シェーダーが現在フレームを計算
+1. Gazeマテリアルを持つ GameObject にこのスクリプトを追加。
+2. OnEnable で `_StartTime` を `Time.timeSinceLevelLoad` に設定。
+3. シェーダーがこの値を読み取り、現在のフレームを計算します。
 
 例:
 ```csharp
@@ -505,14 +531,14 @@ private void OnEnable() {
 ### VRChatでのベストプラクティス
 
 ```
-- ネットワーク更新を最小限に; AnimatorControllerを利用
-- シーン内のGaze Shaderオブジェクトは50未満に
-- クロスプラットフォーム互換性のためSpriteSheet優先
-- 遠距離ではLODを有効化し解像度低下
-- QuestおよびPCでテスト
-- 光volumeを有効にして実環境照明
-- 法線マップはハイエンドデバイスのみ
-- シーンスケールに応じて MaxDistance 設定
+- ネットワーク更新を最小限に；マテリアルパラメータにはAnimatorControllerを使用。
+- シーン内のGaze Shaderオブジェクトは50未満に。
+- クロスプラットフォーム互換性のためSpriteSheet優先。
+- LODを有効にし、遠距離では解像度を下げる。
+- QuestおよびPCでテスト。
+- 環境光のためにLight Volumeを有効化。
+- 法線マップはハイエンドデバイスのみ使用。
+- シーンスケールに応じて MaxDistance を設定。
 ```
 
 ---
@@ -523,13 +549,9 @@ private void OnEnable() {
 
 **A**: 優先順位は以下の通りです：
 
-1. **SpriteSheet** (`@Luna/Gaze GIF SpriteSheet`)
-   - ほとんどのケースで互換性抜群
-2. **TextureArray** (`@Luna/Gaze Gif`)
-   - 大量フレームや最高性能が必要な場合
-   - 対応プラットフォームか確認
-3. **Cutout** (`@Luna/Gaze GIF SpriteSheet Cutout`)
-   - 完全不透明かつ最速が必要な場合
+1. **SpriteSheet** (`@Luna/Gaze GIF SpriteSheet`) – ほとんどのケースで互換性抜群。
+2. **TextureArray** (`@Luna/Gaze Gif`) – 大量フレームや最高性能が必要な場合。対象プラットフォームが対応しているか確認。
+3. **Cutout** (`@Luna/Gaze GIF SpriteSheet Cutout`) – 完全不透明で最高速度が必要な場合。
 
 ### Q2: シートの解像度はどれが適切？
 
@@ -543,10 +565,10 @@ VRChat推奨: 1024×1024 〜 2048×2048
 ### Q3: 凝視が不自然に見える場合は？
 
 ```
-1. _SingleAxisGaze の設定を確認
-2. _WeakenDistanceGaze を上げて遠距離効果を緩和
-3. _ExtraRotX/Y/Z で微調整 (±5‑15°程度)
-4. 法線マップを有効にして質感を向上
+1. _SingleAxisGaze の設定を確認（立ったキャラクターなら Y 軸がよい）。
+2. _WeakenDistanceGaze を上げて遠距離効果を緩和。
+3. _ExtraRotX/Y/Z で微調整 (±5‑15°)。
+4. 法線マップを有効にして細部を追加。
 ```
 
 ### Q4: 変換の "高性能" と "高品質" モードの違い？
@@ -580,9 +602,9 @@ VRChat推奨: 1024×1024 〜 2048×2048
 
 または：
 ```
-1. GIFアルファにノイズがないか確認
-2. シェーダーブレンドモードを調整
-3. カメラがZTest LEqualを使用しているか確認
+1. GIFのアルファにノイズがないか確認
+2. シェーダーのBlend Modeを調整
+3. カメラがZTest = LEqualを使用しているか確認
 ```
 
 ### Q7: DrawCallが多すぎる場合の最適化は？
