@@ -1,672 +1,891 @@
-# Gaze Shader - 完全説明書・ユーザーマニュアル（日本語）
+# Gaze Shader - 完全な説明とマニュアル
 
-**作成者**: @咸鱼子Luna  
-**プロジェクト**: Gaze Gif Shader 凝視追跡システム  
+**作者**: @咸鱼子Luna  
+**プロジェクト**: Gaze Gif Shader 視線追従システム  
 **バージョン**: 1.0  
-**最終更新**: 2026-03-03
+**更新日**: 2026-03-03
 
 ---
 
 ## 📖 目次
 
 1. [プロジェクト概要](#プロジェクト概要)
-2. [機能](#機能)
-3. [シェーダー種類比較](#シェーダー種類比較)
+2. [機能と特徴](#機能と特徴)
+3. [3つのShaderの比較](#3つのshaderの比較)
 4. [クイックスタート](#クイックスタート)
-5. [パラメータ解説](#パラメータ解説)
-6. [エディタツール](#エディタツール)
-7. [ワークフロー](#ワークフロー)
-8. [VRC連携](#vrc連携)
-9. [FAQ](#faq)
-10. [技術的詳細](#技術的詳細)
+5. [Shaderパラメータ詳細](#shaderパラメータ詳細)
+6. [Editorツールの使用](#editorツールの使用)
+7. [ワークフローガイド](#ワークフローガイド)
+8. [VRC統合に関する説明](#vrc統合に関する説明)
+9. [よくある質問](#よくある質問)
+10. [技術的な詳細](#技術的な詳細)
 
 ---
 
 ## プロジェクト概要
 
-**Gaze Shader** は Unity と VRChat 向けに開発された高度なアニメーションレンダリングシステムで、**凝視追跡型GIFアニメーション**の表示を目的としています。機能は以下のとおりです：
+**Gaze Shader** は、VRChat および Unity 向けに設計された高度なアニメーションレンダリングシステムであり、主に**視線追従型GIFアニメーション**効果を実現するために使用されます。このシステムは以下のことが可能です：
 
-- 🎬 GIFをリアルタイム再生し、フレームレートを自在に制御
-- 👁️ カメラに常に面するようオブジェクトを回転（ビルボード効果）
-- 📏 カメラ距離に応じて再生速度を変更
-- 💡 法線マップや鏡面反射、VRCライトボリューム対応
-- 🎭 ループ／一回／ランダム／手動の再生モード
-- 🔀 縮尺・回転のランダム化オプション
+- 🎬 **GIFアニメーションのリアルタイム読み込みと再生**、柔軟なフレームレート制御をサポート
+- 👁️ **自動カメラ追従**、アニメーションオブジェクトが常に観察者の方向を向く（ビルボード効果）
+- 📏 **距離感知制御**、カメラとの距離に応じて再生速度を動的に調整
+- 💡 **高度なライティング効果**、ノーマルマップ、スペキュラ反射、VRC Light Volume 統合を含む
+- 🎭 **多彩な再生モード**、ループ、1回再生、ランダム、手動フレーム制御をサポート
+- 🔀 **ランダムバリエーションのサポート**、スケール、回転などのパラメータのランダム化オプションを提供
 
 ---
 
-## 機能
+## 機能と特徴
 
 ### コア機能
 
 | 機能 | 説明 |
 |------|------|
-| **GIF再生** | GIFからフレームを抽出し順次描画 |
-| **凝視追跡** | 常にカメラ方向を向く |
-| **距離速度制御** | 視聴者距離により再生速度変化 |
-| **再生モード** | ループ/一回/ランダム/手動 |
-| **法線マッピング** | 法線マップ生成・利用でハイライト |
-| **ライトボリューム** | VRChatのLight Volumeに対応 |
+| **GIFアニメーション再生** | GIFファイルから自動的にフレームシーケンスを抽出して再生 |
+| **視線追従** | オブジェクトが自動的に回転し、カメラの方向を向く（ビルボード効果） |
+| **距離感知** | カメラまでの距離に応じてアニメーション速度を調整 |
+| **再生モード** | ループ/1回/ランダム/手動の4つのモード |
+| **ノーマルマップ** | ノーマルマップの生成と使用をサポートし、ハイライト効果を実現 |
+| **ライティング統合** | VRC Light Volume（光照体積）との統合 |
 
-### 上級オプション
+### 高度な機能
 
-| オプション | 説明 |
-|------------|------|
-| **開始フレームランダム化** | オブジェクトごとにランダム開始 |
-| **回転バリエーション** | X/Y/Z軸にランダム回転 |
-| **スケールバリエーション** | 大きさのランダム化 |
-| **軸限定凝視** | 任意軸のみ追跡 possible |
-| **距離フェード** | 遠距離で凝視効果を弱める |
-| **アルファ修正** | 透明度アーティファクトを補正 |
+| 特徴 | 説明 |
+|------|------|
+| **開始フレームのランダム化** | 各オブジェクトでランダムに開始フレームを選択可能 |
+| **回転バリエーション** | X/Y/Z軸のランダムな回転変化をサポート |
+| **スケールバリエーション** | オブジェクトのサイズをランダムに変化 |
+| **多軸視線追従** | 全方向、X軸、Y軸、Z軸の単軸追従をサポート |
+| **距離減衰** | 遠距離時に視線追従効果を弱める |
+| **Alpha修正** | 透明度のアーティファクト問題を修正 |
 
 ---
 
-## シェーダー種類比較
+## 3つのShaderの比較
 
-### 1️⃣ **Gaze Gif** (`@Luna/Gaze Gif`)
+### 1️⃣ **Gaze Gif** (@Luna/Gaze Gif)
 
-- **テクスチャ形式**: Texture2DArray（推奨）
-- **用途**: メモリに余裕があり、フレーム数を大量に扱う時
-- **利点**: 最高の性能、無制限のフレーム、1フレームあたり低メモリ
-- **欠点**: GIFを配列に変換する必要があり、すべてのプラットフォームで未対応
-- **推奨**: デスクトップ/VRアプリ、高品質VRChatワールド
+- **テクスチャフォーマット**: Texture2DArray（推奨）
+- **用途**: フレームシーケンスを正確に制御する必要があり、メモリに余裕がある場合
+- **メリット**:
+  - 最高のパフォーマンス効率
+  - 最も多くのフレーム数をサポート
+  - 1フレームあたりのメモリ消費が少ない
+- **デメリット**:
+  - GIFをTextureArrayに変換する必要がある
+  - 一部のプラットフォームではTextureArrayがサポートされていない場合がある
+- **推奨シーン**: 高品質なVRChatワールド、デスクトップアプリ、VRアプリ
 
-### 2️⃣ **Gaze GIF SpriteSheet** (`@Luna/Gaze GIF SpriteSheet`)
+### 2️⃣ **Gaze GIF SpriteSheet** (@Luna/Gaze GIF SpriteSheet)
 
-- **テクスチャ形式**: 2Dスプライトシート格子
-- **用途**: 汎用・最高の互換性
-- **利点**: どこでも動作、変換が簡単、行列調整可能
-- **欠点**: 大きな単一テクスチャはメモリ消費が多く、性能は少し劣る
-- **推奨**: VRChatワールド、Quest、一般制作
+- **テクスチャフォーマット**: 2D SpriteSheet（グリッドレイアウト）
+- **用途**: 一般的なシーン、互換性が最も高い
+- **メリット**:
+  - **最強の互換性**、すべてのプラットフォームをサポート
+  - 変換が簡単で高速
+  - 列数、行数、フレーム数の調整が容易
+- **デメリット**:
+  - 1枚の大きなテクスチャが比較的多くのメモリを消費する可能性がある
+  - パフォーマンスはTextureArrayよりわずかに劣る
+- **推奨シーン**: VRChatワールド、Questプラットフォーム、一般的な制作環境
 
-### 3️⃣ **Gaze GIF SpriteSheet Cutout** (`@Luna/Gaze GIF SpriteSheet Cutout`)
+### 3️⃣ **Gaze GIF SpriteSheet Cutout** (@Luna/Gaze GIF SpriteSheet Cutout)
 
-- **テクスチャ形式**: 2Dスプライトシート（不透明のみ）
-- **用途**: 完全不透明GIFで最高性能を求める場合
-- **利点**: 最速性能、深度書き込み、アルファブレンド不要
-- **欠点**: 半透明画像を扱えない
-- **推奨**: 不透明GIFアニメ、モバイル/Quest
+- **テクスチャフォーマット**: 2D SpriteSheet（不透明バージョン）
+- **用途**: 完全に不透明なGIF、最高のパフォーマンスが必要な場合
+- **メリット**:
+  - **最高のパフォーマンス**
+  - 深度書き込み（ZWrite）をサポート
+  - Alphaブレンド計算が不要
+- **デメリット**:
+  - **完全に不透明な画像にのみ適用可能**
+  - 半透明効果は表示不可
+- **推奨シーン**: 不透明なGIFアニメーション、パフォーマンスに敏感なモバイルプラットフォーム
 
 ---
 
 ## クイックスタート
 
-### ステップ 1: GIF準備
+### ステップ 1: GIFファイルの準備
 
-1. GIFファイルを用意します（透過対応）。
-2. `Assets/` フォルダに配置します。
-3. インスペクタでインポートタイプを **Texture** に設定します。
+1. GIFファイルを準備します（透明背景をサポート）
+2. GIFを `Assets/` ディレクトリに配置します
+3. InspectorでGIFのインポートタイプを **Texture** に設定します
 
-### ステップ 2: マテリアル作成
+### ステップ 2: マテリアルの作成
 
-#### 方法A – SpriteSheet（初心者向け）
+#### 方式 A：SpriteSheetを使用（初心者推奨）
 
-1. プロジェクトウィンドウで右クリック → Create → Material。
-2. シェーダーに `@Luna/Gaze GIF SpriteSheet` を選択。
-3. インスペクタで:
-   - GIFを **GIF Source** フィールドへドラッグ。
-   - **Generate Sprite Sheet** をクリック。
-   - スクリプトが _MainTex_, _Columns_, _Rows_, _TotalFrames_ を自動設定。
+1. **マテリアル作成**: 右クリック → Create → Material
+2. **Shader設定**: `@Luna/Gaze GIF SpriteSheet` を選択
+3. **Inspectorにて**:
+   - GIFファイルを "GIF Source" フィールドにドラッグ＆ドロップ
+   - **"スプライトシートを生成 (生成精灵图)"** ボタンをクリック
+   - Shaderが自動的にMainTex、Columns、Rows、TotalFramesを入力します
 
-#### 方法B – TextureArray（上級者向け）
+#### 方式 B：TextureArrayを使用（上級者向け）
 
-1. 上と同様にマテリアルを作成。
-2. シェーダーに `@Luna/Gaze Gif` を選択。
-3. マテリアルインスペクタの **Tool** メニューを開く:
-   - *GIF to Texture Array* を選択。
-   - 解像度（256‑2048）を選び、**Convert** をクリック。
-   - すべてのフレームを含む Texture2DArray アセットが保存される。
+1. **マテリアル作成**: 右クリック → Create → Material
+2. **Shader設定**: `@Luna/Gaze Gif` を選択
+3. **GIF変換**:
+   - InspectorでToolメニューを見つけます
+   - "GIF to Texture Array" を選択
+   - 解像度を設定して生成します
 
-### ステップ 3: パラメータ設定
+### ステップ 3: パラメータの設定
 
 ```
-基本 (必須):
-├─ FPS (フレームレート): 1‑60（通常10‑24）
-├─ Play Mode: Loop/Once/Random/Manual
-└─ Color: ティントおよびアルファ
+基本設定（必須）：
+├─ FPS (Base FPS): アニメーションのフレームレートを設定、通常 10-24
+├─ Play Mode: 再生モードを選択（Loop/Once/Random/Manual）
+└─ Color: 色の調整
 
-Gaze:
-├─ _Gaze_: カメラ追跡の有無
-├─ _SingleAxisGaze_: All/X/Y/Z 軸
-└─ _WeakenDistanceGaze_: 距離による減衰
+視線追従：
+├─ Gaze: 追従の有効/無効化
+├─ Single Axis Gaze: 追従する軸を選択
+└─ Weaken Distance Gaze: 遠距離時に追従を弱める
 
-Distance Speed:
-├─ _SpeedChangeMode_: Uniform/Accelerate/Decelerate
-├─ _SpeedChangeRate_: 1‑10 (影響強度)
-└─ _MaxDistance_: 5‑50m の参照距離
+距離速度制御：
+├─ Speed Change Mode: 速度変化モードを選択
+├─ Speed Change Rate: 変化の強度を調整
+└─ Max Distance: 影響する距離範囲を設定
 ```
 
-### ステップ 4: シーンに適用
+### ステップ 4: シーンへの適用
 
-1. Quad、Plane、または任意のメッシュを作成。
-2. レンダラーにマテリアルを割り当てる。
-3. Playモードで再生を確認。
+1. Quad、Plane、または3Dモデルを作成します
+2. Rendererに作成したマテリアルを適用します
+3. Play Modeで効果をプレビューします
 
 ---
----
 
-## パラメータ解説
+## Shaderパラメータ詳細
 
-### 📦 テクスチャ類
+### 📦 テクスチャ部分 (Textures)
 
 #### Gaze Gif.shader
 
 ```
 _Textures (Texture Array)
-  ├─ 説明: GIFから変換された配列
+  ├─ 説明: GIF変換で得られた Texture2DArray
   ├─ デフォルト: black
-  └─ 用途: アニメフレームを格納
+  └─ 用途: すべてのアニメーションフレームを保存
 
 _NormalMapArray (2DArray, オプション)
-  ├─ 説明: 法線マップ配列
+  ├─ 説明: 対応するノーマルマップ配列
   ├─ デフォルト: bump
-  └─ 用途: 鏡面反射効果
+  └─ 用途: スペキュラ反射とハイライト効果を実現
 ```
 
 #### Gaze GIF SpriteSheet.shader
 
 ```
 _MainTex (2D)
-  ├─ 説明: スプライトシート画像
+  ├─ 説明: SpriteSheet結合画像
   ├─ デフォルト: white
-  └─ 用途: フレームを格納
+  └─ 用途: すべてのアニメーションフレームを含むグリッド
 
 _Columns & _Rows (IntRange)
-  ├─ 説明: 格子の列数・行数
-  ├─ 範囲: 1‑64
-  └─ 例: 4列×4行=16フレーム
+  ├─ 説明: SpriteSheetの列数と行数
+  ├─ 範囲: 1-64
+  └─ 例: 4 列 × 4 行 = 16 フレーム
 
 _TotalFrames (IntRange)
-  ├─ 説明: 有効フレーム数
-  ├─ 範囲: 1‑4096
-  └─ 行×列より少なく設定可
+  ├─ 説明: 有効な合計フレーム数
+  ├─ 範囲: 1-4096
+  └─ 説明: 行数×列数より小さい値を設定して一部のフレームのみ使用可能
 ```
 
-### 🎬 アニメ制御
+### 🎬 アニメーション制御 (Animation Control)
 
 ```
-_fps (IntRange, デフォルト12)
-  ├─ 範囲: 1‑60
-  └─ フレームレート
+_fps (IntRange, デフォルト: 12)
+  ├─ 範囲: 1-60
+  └─ 説明: アニメーションの再生フレームレート
+  
+_PlayMode (Enum, デフォルト: Loop)
+  ├─ Loop (0): ループ再生
+  ├─ Once (1): 1回再生して停止
+  ├─ Random (2): 異なるセグメントをランダムにループ再生
+  └─ Manual (3): 手動でフレームを指定
 
-_PlayMode (Enum, デフォルトLoop)
-  ├─ Loop (0)
-  ├─ Once (1)
-  ├─ Random (2)
-  └─ Manual (3)
+_ManualFrame (IntRange, デフォルト: 1)
+  ├─ 範囲: 1-100
+  ├─ 用途: PlayMode=Manual の時に表示するフレーム番号を指定
+  └─ 説明: 値 1 は最初のフレームを意味する
 
-_ManualFrame (IntRange, デフォルト1)
-  ├─ 範囲: 1‑100
-  ├─ PlayMode=Manual時に使用
-  └─ 1が最初のフレーム
-
-_StartFrameRandomization (Float, デフォルト0)
-  ├─ 範囲: 0‑1
-  └─ オブジェクトごとの開始オフセット
+_StartFrameRandomization (Float, デフォルト: 0)
+  ├─ 範囲: 0-1
+  ├─ 説明: 各オブジェクトの開始フレームのランダム化の度合い
+  └─ 例: 0.5 = 各オブジェクトが50%の範囲でランダムな開始フレームを選択
 ```
 
-### 📏 凝視制御
+### 📏 視線追従 (Gaze Control)
 
 ```
-_Gaze (Toggle, デフォルトON)
-  ├─ 有効でカメラ方向追跡
-  └─ 無効で元の向きを維持
+_Gaze (Toggle, デフォルト: ON)
+  ├─ ON: オブジェクトがカメラの方向を向く
+  └─ OFF: オブジェクトが元の向きを維持する
 
-_SingleAxisGaze (Enum, デフォルトAll)
-  ├─ All (0): 全軸追跡
-  ├─ X (1)
-  ├─ Y (2)
-  └─ Z (3)
+_SingleAxisGaze (Enum, デフォルト: All)
+  ├─ All (0): 全方向追従（最もリアル）
+  ├─ X (1): X軸のみ追従
+  ├─ Y (2): Y軸のみ追従（直立したキャラクターによく使われる）
+  └─ Z (3): Z軸のみ追従
 
-_WeakenDistanceGaze (Float, デフォルト0)
-  ├─ 範囲: 0‑1
-  └─ 距離に応じて効果を弱める
+_WeakenDistanceGaze (Float, デフォルト: 0)
+  ├─ 範囲: 0-1
+  ├─ 説明: カメラから遠ざかるほど追従効果を弱める
+  └─ 例: 0.5 = 最遠距離で追従強度が半分になる
 
-_ExtraRotX/Y/Z (Float, デフォルト0)
-  ├─ 範囲: ‑180〜180°
-  └─ 追加回転オフセット
+_ExtraRotX/Y/Z (Float, デフォルト: 0)
+  ├─ 範囲: -180 ~ 180°
+  ├─ 説明: 追加の回転オフセット（視線回転に重畳）
+  └─ 用途: 視線方向の調整やオブジェクトの向きの修正
 ```
 
-### 📉 距離速度制御
+### 📉 距離速度制御 (Distance Speed Control)
 
 ```
-_SpeedChangeMode (Enum, デフォルトUniform)
-  ├─ Uniform (0): 距離影響なし
-  ├─ Accelerate (1): 近距離ほど速く
-  └─ Decelerate (2): 近距離ほど遅く
+_SpeedChangeMode (Enum, デフォルト: Uniform)
+  ├─ Uniform (0): 距離が速度に影響しない
+  ├─ Accelerate (1): 近いほど速度が速くなる
+  └─ Decelerate (2): 近いほど速度が遅くなる
 
-_SpeedChangeRate (Float, デフォルト1)
-  ├─ 範囲: 1‑10
-  └─ 影響強度
+_SpeedChangeRate (Float, デフォルト: 1)
+  ├─ 範囲: 1-10
+  ├─ 説明: 距離が速度に与える影響の強度
+  └─ 例: 値が大きいほど速度変化が激しくなる
 
-_MaxDistance (Float, デフォルト15)
-  ├─ 範囲: 5‑50m
-  └─ 参照距離
+_MaxDistance (Float, デフォルト: 15)
+  ├─ 範囲: 5-50 メートル
+  ├─ 説明: 距離速度制御の基準となる距離
+  └─ 説明: この距離を超えると加速/減速が停止する
 
-_SpeedFromZero (Toggle, デフォルトOFF)
-  ├─ ON: 近距離で速度0可
-  └─ OFF: 最低FPS維持
+_SpeedFromZero (Toggle, デフォルト: OFF)
+  ├─ ON: 最短距離で速度を0にできる
+  └─ OFF: 最短距離でも基本FPSを維持する
 ```
 
-### 🎨 色・スケール
+### 🎨 カラーとスケール (Color & Scale)
 
 ```
-_Color (Color, デフォルトWhite)
-  ├─ テクスチャの色味
-  └─ Alphaは透明度調整
+_Color (Color, デフォルト: White)
+  ├─ 説明: テクスチャの色合いを調整
+  └─ Alpha: 全体の透明度に影響
 
-_ScaleX / _ScaleY (Float, デフォルト1)
-  ├─ UVスケール
-  └─ 表示範囲の拡大縮小
+_ScaleX / _ScaleY (Float, デフォルト: 1)
+  ├─ 説明: UVテクスチャのスケール
+  └─ 用途: 表示されるテクスチャ部分の拡大/縮小
 
-_UVx / _UVy (Float, デフォルト0)
-  ├─ UVオフセット
-  └─ テクスチャの位置移動
+_UVx / _UVy (Float, デフォルト: 0)
+  ├─ 説明: UVオフセット
+  └─ 用途: テクスチャの表示位置の平行移動
 
-_Brightness (Float, デフォルト1.0)
-  ├─ 範囲: 0‑5
-  └─ 全体輝度調整
+_Brightness (Float, デフォルト: 1.0)
+  ├─ 範囲: 0-5
+  └─ 説明: 全体の明るさを調整
 ```
 
-### 🎭 ランダム変化
+### 🎭 ランダムバリエーション (Random Variation)
 
 ```
-_ScaleVariation (Float, デフォルト1)
-  ├─ 範囲: 1‑2
-  └─ ランダムスケール倍率
+_ScaleVariation (Float, デフォルト: 1)
+  ├─ 範囲: 1-2
+  ├─ 説明: オブジェクトのスケールのランダム変化幅
+  └─ 例: 1.5 = スケールが 1x-1.5x の間でランダムに変化
 
-_RandomRotXVariation (Float, デフォルト0)
-  ├─ 範囲: 0‑1
-  └─ X軸ランダム回転
+_RandomRotXVariation (Float, デフォルト: 0)
+  ├─ 範囲: 0-1
+  ├─ 説明: X軸の回転のランダム化の度合い
+  └─ 1.0 = ±180° のランダムな回転が可能
 
-_RandomRotYVariation (Float, デフォルト0)
-  └─ Y軸ランダム回転
+_RandomRotYVariation (Float, デフォルト: 0)
+  ├─ 範囲: 0-1
+  └─ 説明: Y軸の回転のランダム化の度合い
 
-_RandomRotZVariation (Float, デフォルト0)
-  └─ Z軸ランダム回転
+_RandomRotZVariation (Float, デフォルト: 0)
+  ├─ 範囲: 0-1
+  └─ 説明: Z軸の回転のランダム化の度合い
 ```
 
-### 💡 ライティング
+### 💡 ライティング効果 (Lighting Effect)
 
 ```
-_LightingEffect (Toggle, デフォルトON)
-  ├─ ライティング計算を有効
-  └─ 無効でテクスチャのみ表示
+_LightingEffect (Toggle, デフォルト: ON)
+  ├─ ON: ライティング計算を有効化
+  └─ OFF: テクスチャそのもののみを表示
 
-_Brightness (Float, デフォルト1.0)
-  ├─ 範囲: 0‑5
-  └─ 光の明るさ調整
+_Brightness (Float, デフォルト: 1.0)
+  ├─ 範囲: 0-5
+  └─ 説明: ライティングの明るさを調整
 
-_UseNormalMap (Toggle, デフォルトOFF)
-  ├─ 法線マップを使用
-  └─ _NormalMapArrayまたは_NormalMapが必要
+_UseNormalMap (Toggle, デフォルト: OFF)
+  ├─ 説明: ノーマルマップのサポートを有効化
+  └─ 依存: _NormalMapArray または _NormalMap と組み合わせる必要がある
 
-_NormalStrength (Float, デフォルト1)
-  ├─ 範囲: ‑5〜5
-  └─ 法線強度
+_NormalStrength (Float, デフォルト: 1)
+  ├─ 範囲: -5 ~ 5
+  ├─ 説明: ノーマルマップの強度
+  └─ 負の値は法線の方向を反転させる
 
-_SpecularSharpness (Float, デフォルト20)
-  ├─ 範囲: 1‑100
-  └─ 鏡面反射の鋭さ
+_SpecularSharpness (Float, デフォルト: 20)
+  ├─ 範囲: 1-100
+  ├─ 説明: スペキュラ反射のシャープネス
+  └─ 値が高いほど鋭く集中する
 
-_SpecularBrightness (Float, デフォルト0.5)
-  ├─ 範囲: 0‑1
-  └─ 鏡面反射の明るさ
+_SpecularBrightness (Float, デフォルト: 0.5)
+  ├─ 範囲: 0-1
+  └─ 説明: スペキュラ反射の明るさ
 ```
 
-### 🌈 VRC機能
+### 🌈 VRC 統合 (VRC Features)
 
 ```
-_UseLightVolume (Toggle, デフォルトON)
-  ├─ VRChat Light Volume対応
-  └─ ライトボリュームの影響を受ける
+_UseLightVolume (Toggle, デフォルト: ON)
+  ├─ 説明: VRC Light Volume サポートを有効化
+  └─ 用途: VRCワールドでLight Volumeの影響を受ける
 
-_LightVolumeIntensity (Float, デフォルト1.0)
-  ├─ 範囲: 0‑2
-  └─ 影響の強さ
+_LightVolumeIntensity (Float, デフォルト: 1.0)
+  ├─ 範囲: 0-2
+  └─ 説明: Light Volume が影響を与える強度
 ```
 
-### ☑️ 表示修正
+### ☑️ 表示修正 (Display Fix)
 
 ```
-_BackfaceCulling (Toggle, デフォルトON)
-  ├─ バックフェイスカリングを有効
-  └─ 無効で裏面を表示
+_BackfaceCulling (Toggle, デフォルト: ON)
+  ├─ 説明: 背面カリングを有効化
+  └─ OFFにするとオブジェクトの背面が表示される
 
-_FixTransp (Toggle, デフォルトOFF)
-  ├─ 透明度アーティファクトを修正
-  └─ エッジがちらつく場合にON
+_FixTransp (Toggle, デフォルト: OFF)
+  ├─ 説明: 透明度のアーティファクトを修正
+  └─ エッジのちらつきが見られる場合はこのオプションをONにする
 ```
 
 ---
 
-## エディタツール
+## Editorツールの使用
 
 ### 🎛️ Gaze Gif Shader GUI
 
-このカスタムインスペクターは、Gazeシェーダーを使用するマテリアル編集を強化します。
+これはShaderのカスタムエディタパネルです。
 
-#### 主なセクション
+#### 主な機能エリア
 
-1. **作者情報** – ソーシャルリンク（Booth、X、Bilibili）とクレジット。
-2. **ヘッダー** – マテリアルマネージャを開くボタンとシェーダー切り替え。
-3. **リソースセクション**
+**1. 作者情報エリア**
+- Lunaのソーシャルメディアリンクを表示
+- Booth、X (Twitter)、Bilibili
 
-   - SpriteSheet版：**[Generate Sprite Sheet]** ボタン
-     * 割り当てられたGIFを入力として受け取る
-     * 最適な行×列レイアウトを計算
-     * アトラスを作成
-     * マテリアルのパラメータを自動設定
-   - TextureArray版：**Tool** メニューに
-     * *GIF to Texture Array*（解像度指定）
-     * *GIF to SpriteSheet* などの変換ヘルパーがある。
+**2. ヘッダーエリア**
+- Material Manager ボタン：マテリアルマネージャーを開く
+- クイックShader切り替え（Gaze Gif / SpriteSheet / Cutout）
+- 既存のマテリアルの即時編集
 
-4. **効果セクション** – 再生モード、FPS、ランダム開始、距離速度など。
-5. **固定変化** – 追加回転、スケール/UV調整。
-6. **ランダム変化** – インスタンスごとのスケール・方向ランダム。
-7. **詳細** – 法線マップ生成、スペキュラ設定、背面カリング、透明修正。
+**3. リソースエリア (Resource Section)**
+
+SpriteSheet バージョンの場合：
+```
+[スプライトシートを生成] ボタン
+  ├─ 入力: GIFファイル
+  ├─ 処理: SpriteSheetに自動変換
+  └─ 出力: MainTex、Columns、Rows、TotalFrames
+```
+
+TextureArray バージョンの場合：
+```
+Tool メニュー
+  ├─ GIF to Texture Array: GIFを変換
+  └─ GIF to SpriteSheet: SpriteSheetに変換
+```
+
+**4. エフェクトエリア (Effect Section)**
+
+- Play Mode の選択
+- FPS の調整
+- 開始フレームのランダム化
+- 速度変化モードの設定
+
+**5. 固定バリエーションエリア (Fixed Variation)**
+
+- Extra Rotation (X/Y/Z)
+- Scale、UV Offset など
+
+**6. ランダムバリエーションエリア (Random Variation)**
+
+- Scale Variation
+- Random Rotation Variation
+
+**7. 高度な設定エリア (Advanced)**
+
+- ノーマルマップ設定
+- スペキュラ反射パラメータ
+- 背面カリングオプション
 
 ---
 
 ### 📁 Material Instance Manager
 
-`Tools → @Luna → Gaze Shader Material Manager` で開きます。
+開く: `Tools → @Luna → Gaze Shader Material Manager`
 
 #### 機能
 
 ```
-左パネル：
+左側パネル：
 ├─ 言語選択 (EN/CN/JA)
-├─ クイック操作
-│  ├─ [Auto Optimize All] – シーン全体を一括最適化
-│  └─ [Refresh Scan] – マテリアルを再スキャン
-└─ テクスチャ別/未設定のマテリアル一覧
+├─ クイックアクションボタン
+│  ├─ [すべて自動最適化] - シーン内のマテリアルを一括最適化
+│  └─ [再スキャン] - シーンのマテリアルを再スキャン
+└─ マテリアルグループ表示
+   ├─ テクスチャごとのグループ
+   └─ テクスチャが割り当てられていないマテリアル
 
-右パネル操作：
-├─ [Create Shared Instance]
-├─ [Optimize Scene]
-└─ [Cleanup Unused]
+右側操作：
+├─ [共有インスタンスの作成] - 同じテクスチャに対して共有マテリアルを作成
+├─ [シーンの最適化] - 共有マテリアルインスタンスに置換
+└─ [未使用のクリーンアップ] - シーン内の未使用マテリアルを削除
 ```
 
 #### ワークフロー
 
-1. マネージャを起動。
-2. **Refresh Scan** をクリック。
-3. グループと推奨を確認。
-4. **Auto Optimize All** または手動で共有インスタンスを作成し、シーンのマテリアルを置換。
-5. 終了後ウィンドウを閉じる。
+```
+1. Material Managerを開く
+2. [再スキャン] をクリックしてすべてのマテリアルをスキャン
+3. マテリアルグループと最適化の提案を確認
+4. 手動または [すべて自動最適化] をクリックして最適化を実行
+5. ウィンドウを閉じて結果を確認
+```
+
+---
 
 ### 🎨 Normal Map Generator
 
-テクスチャから法線マップを自動生成します。
+ノーマルマップを自動生成します。
 
-1. **材質で** `_UseNormalMap` をONに。
-2. インスペクタで **[Generate Normal Map]** をクリック。
-3. パラメータを調整:
-   - `_NormalStrength` (‑5〜5)
-   - `_SpecularSharpness` (1〜100)
-   - `_SpecularBrightness` (0〜1)
+#### 使用手順
 
-このジェネレータは隣接ピクセルの明暗差を計算し、バンプマップ的な法線テクスチャを生成します。
+1. **マテリアルで有効化**:
+   - `_UseNormalMap` = ON に設定
+
+2. **自動生成**:
+   - Inspectorで **[法線マップを生成 (生成法线贴图)]** ボタンをクリック
+   - システムがTextureに基づいて対応するノーマルマップを自動生成します
+
+3. **パラメータの調整**:
+   - `_NormalStrength`: 法線の強度（範囲 -5~5）
+   - `_SpecularSharpness`: スペキュラ反射のシャープネス（範囲 1-100）
+   - `_SpecularBrightness`: スペキュラ反射の明るさ（範囲 0-1）
+
+#### ノーマルマップの原理
+
+ノーマルマップは隣接するピクセルの輝度差を計算し、3Dの法線方向を生成することで以下の目的で使用されます：
+- 凹凸の視覚効果を実現
+- スペキュラ反射の計算
+- ディテール感の強化
 
 ---
 
-### 🔄 GIF変換ツール
+### 🔄 GIF 変換ツール
 
 #### GIF to SpriteSheet Converter
 
-- 高速で全プラットフォーム対応。
-- 2つの品質モード：
-  - **高性能** – 最大 2048×2048、Quest/モバイル向け。
-  - **高品質** – 最大 4096×4096、デスクトップ/ハイエンド向け。
+**特徴**:
+- ✅ 高速な変換
+- ✅ 最強の互換性
+- ✅ 高パフォーマンスモードと高品質モードをサポート
 
-**手順**:
-1. 材質にGIFを割り当てる。
-2. **Generate Sprite Sheet** をクリック。
-3. 品質モードを選択。
-4. ツールが行/列を計算しアトラスを生成。
+**プロセス**:
+```
+1. マテリアルのInspectorでGIFを選択
+2. [スプライトシートを生成] をクリック
+3. 品質モードを選択:
+   - 高パフォーマンス: 1枚あたり ≤2048×2048
+   - 高品質: 1枚あたり ≤4096×4096
+4. グリッドレイアウト（行数×列数）を自動計算
+5. Sprite Sheet を生成して適用
+```
 
-| モード | 最大サイズ | 性能 | 用途 |
-|------|----------|------|------|
-| 高性能 | 2048² | 最速 | モバイル/VRChat大規模 |
-| 高品質 | 4096² | 良好 | デスクトップ/ハイエンド |
+**品質の比較**:
+| モード | 最大サイズ | パフォーマンス | 用途 |
+|------|---------|------|------|
+| 高パフォーマンス | 2048×2048 | 最適 | モバイル、VRChatマルチプレイ |
+| 高品質 | 4096×4096 | 良好 | デスクトップ、ハイエンドプラットフォーム |
 
 #### GIF to Texture Array Converter
 
-- 最高性能、フレーム無制限。
-- 対応機種は限定的。
+**特徴**:
+- ✅ パフォーマンスが最適
+- ✅ フレーム数無制限
+- ❌ 互換性に制限あり
 
-**手順**:
-1. GIFを材質にドラッグ。
-2. 解像度を選択 (256–2048)。
-3. **Convert** をクリック。
-4. Texture2DArray アセットが保存される。
-
-解像度ガイド:
-
+**プロセス**:
 ```
-256: 超小・最高性能
-512: 推奨バランス
-1024: 高品質
-2048: 最高品質
+1. マテリアルにGIFをドラッグ
+2. 解像度を選択 (256-2048)
+3. [変換] をクリック
+4. システムが自動的にすべてのフレームを抽出
+5. Texture2DArray ファイルを生成
 ```
 
----
-
-## ワークフロー
-
-### ワークフロー1 – プロトタイピング
-
+**解像度選択ガイド**:
 ```
-1. 小さめのGIFを用意（≤256²推奨）。
-2. SpriteSheetマテリアルを作成。
-3. GIFをスプライトシートに変換。
-4. FPS=12‑24、色調、Gaze=ON を設定。
-5. Quad に適用してプレビュー。
-```
-
-### ワークフロー2 – VRChat最適化
-
-```
-1. リソースを計画し、アセットを分類。
-2. 高性能モード (<4096) でまとめて変換。
-3. Material Manager で共有マテリアルを作成。
-4. _UseLightVolume を有効にし、強度を約0.8‑1.2に設定。
-5. Quest上でテストし、DrawCallとメモリを監視。
-```
-
-### ワークフロー3 – 高度なビジュアル
-
-```
-1. SpriteSheetマテリアルから開始。
-2. 凝視パラメータと追加回転を微調整。
-3. 法線マップを有効にし、強度を調整。
-4. 鏡面反射設定を構成。
-5. 距離速度制御を調整。
-6. ランダム変化を追加し、複製。
+256×256:   超小型、高パフォーマンス
+512×512:   推奨（バランス重視）
+1024×1024: 高品質、高負荷
+2048×2048: 最高品質、最高負荷
 ```
 
 ---
 
-## VRC連携
+## ワークフローガイド
 
-### Light Volume対応
+### ワークフロー 1: 高速プロトタイピング
 
-VRChatのLight Volumeは特定領域の光を追加するツール。Gazeシェーダーはそれに自動的に反応します。
+```
+ステップ 1: リソースの準備
+  └─ GIFファイルを準備 (256×256以内を推奨)
 
-**有効化手順**:
-1. シェーダーで以下を設定:
+ステップ 2: マテリアルの作成
+  ├─ Create → Material
+  └─ Shader = @Luna/Gaze GIF SpriteSheet
+
+ステップ 3: GIF変換
+  ├─ GIFを "GIF Source" にドラッグ
+  └─ [スプライトシートを生成] をクリック
+
+ステップ 4: 基本パラメータの設定
+  ├─ FPS = 12-24
+  ├─ Color = 適切に調整
+  └─ Gaze = ON
+
+ステップ 5: シーンへの適用
+  ├─ Quadを作成
+  └─ マテリアルを適用してプレビュー
+```
+
+### ワークフロー 2: VRChat ワールド最適化
+
+```
+ステップ 1: リソースの計画
+  ├─ GIFアニメーションがいくつ必要か評価
+  └─ 分類：小、中、大
+
+ステップ 2: 一括変換（SpriteSheet）
+  ├─ 高パフォーマンスモードを使用
+  ├─ 4096×4096 以内に抑える
+  └─ 同じサイズのGIFには統一された解像度を使用
+
+ステップ 3: 共有マテリアルの作成
+  ├─ Material Managerを開く
+  ├─ [すべて自動最適化] をクリック
+  └─ 同じテクスチャに対して共有インスタンスを作成
+
+ステップ 4: Light Volume の設定
+  ├─ _UseLightVolume を有効化
+  ├─ 環境に応じて強度を設定 (0.8-1.2)
+  └─ ライティング効果をテスト
+
+ステップ 5: パフォーマンステスト
+  ├─ Quest デバイスでテスト
+  ├─ Draw Call とメモリを監視
+  └─ 必要に応じて解像度を調整
+```
+
+### ワークフロー 3: 高度なビジュアルエフェクト
+
+```
+ステップ 1: 基本設定
+  ├─ Gaze GIF SpriteSheet を選択
+  └─ GIFを変換して適用
+
+ステップ 2: 視線追従の微調整
+  ├─ SingleAxisGaze: オブジェクトに合わせて軸を選択
+  ├─ WeakenDistanceGaze: 遠距離時の効果を調整
+  └─ ExtraRot: 向きを修正
+
+ステップ 3: ノーマルマップの有効化
+  ├─ _UseNormalMap = ON に設定
+  ├─ [法線マップを生成] をクリック
+  └─ _NormalStrength を調整 (1-2 が自然)
+
+ステップ 4: スペキュラ反射の設定
+  ├─ _SpecularSharpness = 20-50
+  ├─ _SpecularBrightness = 0.3-0.7
+  └─ ライティング下で効果を観察
+
+ステップ 5: 距離速度制御
+  ├─ SpeedChangeMode: Accelerate または Decelerate を選択
+  ├─ SpeedChangeRate: 1-3（推奨）
+  ├─ MaxDistance: 10-20 メートル
+  └─ 異なる距離でのアニメーション速度をテスト
+
+ステップ 6: ランダムバリエーション
+  ├─ ScaleVariation: 1.2-1.5
+  ├─ RandomRotVariation: 0.1-0.3（微調整）
+  └─ 複数のコピーを作成してランダム効果を観察
+```
+
+---
+
+## VRC統合に関する説明
+
+### VRC Light Volume サポート
+
+**Light Volumeとは？**
+
+VRC Light Volumeは、VRChatワールド内の特定のエリアにライティングを追加するためのツールです。この機能を有効にすると、Gaze Shaderは自動的にLight Volumeのライティングに反応します。
+
+**有効化の手順**:
+
+1. **Shaderで有効化**:
    ```
    _UseLightVolume = ON
    _LightVolumeIntensity = 1.0 (デフォルト)
    ```
-2. ワールドに Light Volume を配置するとシェーダーが検知します。
-3. 強度を調整:
+
+2. **VRCワールド内**:
+   - ワールドにLight Volumeが配置されていることを確認
+   - Shaderが自動的に検出し反応します
+
+3. **強度の調整**:
    ```
-   0.0 – 影響なし
-   1.0 – 通常の影響（推奨）
-   2.0 – 目に見える強い変化
+   0.0: Light Volumeの影響を全く受けない
+   1.0: 通常の影響（推奨）
+   2.0: 影響を強化（明らかなライティングの変化）
    ```
 
-### UdonSharpスクリプト
+### UdonSharp スクリプト統合
 
-ファイル: `UdonGazeGifTrigger.cs`
+ファイル: [UdonGazeGifTrigger.cs](Scripts\UdonGazeGifTrigger.cs)
 
-アニメ開始時間をプレイヤー間で同期させます。
+**機能**: 視線アニメーションの再生時間を同期
 
-**使用法**:
-1. Gazeマテリアルを持つ GameObject にこのスクリプトを追加。
-2. OnEnable で `_StartTime` を `Time.timeSinceLevelLoad` に設定。
-3. シェーダーがこの値を読み取り、現在のフレームを計算します。
+**使用方法**:
 
-例:
+1. Gaze Shaderマテリアルを含むGameObjectにこのスクリプトを追加します
+2. スクリプトはOnEnable時に現在の時間を自動的に取得します
+3. 時間をShaderの `_StartTime` パラメータに同期します
+4. すべてのプレイヤーが同期されたアニメーションを見れるようにします
+
+**動作原理**:
+
 ```csharp
-private void OnEnable() {
+// ゲームオブジェクトが有効になった時に自動実行
+OnEnable() {
+    // マテリアルを取得
     meshRenderer = GetComponent<Renderer>();
-    if(meshRenderer?.material != null)
-        meshRenderer.material.SetFloat("_StartTime", Time.timeSinceLevelLoad);
+    
+    // 開始時間を現在のゲーム時間に設定
+    meshRenderer.material.SetFloat("_StartTime", Time.timeSinceLevelLoad);
+    
+    // Shaderはこの時間を使用して現在表示すべきフレームを計算
 }
 ```
 
 ### VRChatでのベストプラクティス
 
 ```
-- ネットワーク更新を最小限に；マテリアルパラメータにはAnimatorControllerを使用。
-- シーン内のGaze Shaderオブジェクトは50未満に。
-- クロスプラットフォーム互換性のためSpriteSheet優先。
-- LODを有効にし、遠距離では解像度を下げる。
-- QuestおよびPCでテスト。
-- 環境光のためにLight Volumeを有効化。
-- 法線マップはハイエンドデバイスのみ使用。
-- シーンスケールに応じて MaxDistance を設定。
+1. ネットワーク問題
+   ├─ マテリアルパラメータの頻繁な変更を避ける
+   └─ AnimatorControllerを使用してアニメーションパラメータをプリセットする
+
+2. パフォーマンス最適化
+   ├─ シーン内の単一のGaze Shaderは50個を超えないようにする
+   ├─ SpriteSheetを合理的に使用（推奨）
+   └─ LODシステムを有効にする（遠くで解像度を下げる）
+
+3. クロスプラットフォーム互換性
+   ├─ TextureArrayではなくSpriteSheetを優先的に使用する
+   ├─ QuestおよびPCプラットフォームでテストする
+   └─ Draw Callの数を監視する
+
+4. ビジュアルエフェクト
+   ├─ Light Volume：環境光の影響を得るために有効化
+   ├─ ノーマルマップ：ハイエンドデバイスでのみ有効化
+   └─ 距離制御：シーンの空間に合わせてMaxDistanceを調整
 ```
 
 ---
 
-## FAQ
+## よくある質問
 
-### Q1: どのシェーダーを選べばよい？
+### Q1: どのShaderバージョンを選ぶべきですか？
 
-**A**: 優先順位は以下の通りです：
+**A**: 優先順位：
 
-1. **SpriteSheet** (`@Luna/Gaze GIF SpriteSheet`) – ほとんどのケースで互換性抜群。
-2. **TextureArray** (`@Luna/Gaze Gif`) – 大量フレームや最高性能が必要な場合。対象プラットフォームが対応しているか確認。
-3. **Cutout** (`@Luna/Gaze GIF SpriteSheet Cutout`) – 完全不透明で最高速度が必要な場合。
+1. **第一候補: SpriteSheetバージョン** (`@Luna/Gaze GIF SpriteSheet`)
+   - 最強の互換性
+   - 99%のシーンに適しています
 
-### Q2: シートの解像度はどれが適切？
+2. **選択: TextureArrayバージョン** (`@Luna/Gaze Gif`)
+   - 条件：非常に多くのフレーム数が必要 (>256)
+   - 条件：メモリに余裕がある
+   - 条件：プラットフォームがサポートしていることを確認
 
-```
-モバイル/Quest: 512×512 または 1024×1024
-VRChat推奨: 1024×1024 〜 2048×2048
-ハイエンドPC: 2048×2048 〜 4096×4096
-複数アセットで均一解像度にするとバッチが向上
-```
+3. **選択: Cutoutバージョン** (`@Luna/Gaze GIF SpriteSheet Cutout`)
+   - 条件：画像が完全に不透明
+   - 条件：最高のパフォーマンスが必要
 
-### Q3: 凝視が不自然に見える場合は？
+### Q2: 変換後のSpriteSheetの解像度はどれくらいが適切ですか？
 
-```
-1. _SingleAxisGaze の設定を確認（立ったキャラクターなら Y 軸がよい）。
-2. _WeakenDistanceGaze を上げて遠距離効果を緩和。
-3. _ExtraRotX/Y/Z で微調整 (±5‑15°)。
-4. 法線マップを有効にして細部を追加。
-```
-
-### Q4: 変換の "高性能" と "高品質" モードの違い？
+**A**: 用途によります：
 
 ```
-高性能モード:
-├─ 最大アトラス 2048×2048
-├─ Quest、多人数シーン向け
-└─ 高速読み込み・低メモリ
+モバイル/Quest:      512×512 または 1024×1024
+VRChat 推奨:         1024×1024 から 2048×2048
+ハイエンドPC:        2048×2048 から 4096×4096
+複数のアニメーションで共有: 最適化のためにできるだけ統一する
+```
+
+### Q3: 視線追従が不自然に見えます。どうすればいいですか？
+
+**A**: 以下のパラメータを調整してください：
+
+```
+1. _SingleAxisGaze を確認
+   └─ キャラクターはY (2) 軸を使用し、その他はAll (0) を使用する
+
+2. _WeakenDistanceGaze を調整
+   └─ この値を増やすと遠くの効果が弱まり、より自然になります
+
+3. _ExtraRotX/Y/Z を使用して向きを微調整
+   └─ 通常は ±5-15° の小さな調整で十分です
+
+4. ノーマルマップを有効にしてディテール感を高める
+   └─ ライティングの反応がよりリアルになります
+```
+
+### Q4: GIFからSpriteSheetへの変換における「高パフォーマンス」と「高品質」の違いは何ですか？
+
+**A**:
+
+```
+高パフォーマンスモード:
+├─ 最大テクスチャ: 2048×2048
+├─ 用途: Quest、マルチプレイシーン、パフォーマンス重視
+└─ メリット: ロードが速い、メモリ消費が少ない
 
 高品質モード:
-├─ 最大アトラス 4096×4096
-├─ デスクトップ/ハイエンド向け
-└─ 最高のディテール
+├─ 最大テクスチャ: 4096×4096
+├─ 用途: デスクトップ、ハイエンドVR
+└─ メリット: ディテールが保持され、視覚的な品質が最高
+
+選択の原則:
+└─ 視覚的な要求を満たせる最も低い解像度を常に使用する
 ```
 
-常に視覚要件を満たす最低解像度を使用してください。
+### Q5: ノーマルマップの _NormalStrength はいくつに設定すべきですか？
 
-### Q5: _NormalStrength の適切な値は？
+**A**:
 
 ```
-負値 (-1〜-5): 法線反転（非推奨）
-0〜1: 微妙〜標準ハイライト（1がデフォルト）
-2〜3: はっきりとした凹凸
-4〜5: 極端な誇張効果
+負の値 (-1 ~ -5):
+└─ 法線を反転、非推奨
+
+0 ~ 1 (推奨):
+├─ 0: ノーマル効果なし
+├─ 0.5: 微妙なハイライト（自然）
+└─ 1.0: 標準的なハイライト（推奨）
+
+1 ~ 5 (强化):
+├─ 2-3: 明らかな凹凸感
+└─ 4-5: 極端に誇張された効果
 ```
 
-### Q6: VRChatでちらつく場合は？
+### Q6: VRChatでちらついて見えます。どうすればいいですか？
 
-`_FixTransp = ON` に設定して透明度アーティファクトを修正。
+**A**: これは透明度のアーティファクトです。`_FixTransp = ON` を有効にしてください。
 
 または：
 ```
-1. GIFのアルファにノイズがないか確認
-2. シェーダーのBlend Modeを調整
-3. カメラがZTest = LEqualを使用しているか確認
+1. GIFのAlphaチャンネルを確認
+   └─ エッジが半透明のノイズになっていないか確認
+
+2. ShaderのBlend Modeを調整
+   └─ シーンによってはブレンドモードの変更が必要かもしれません
+
+3. カメラの深度設定を確認
+   └─ ZTest = LEqual になっているか確認
 ```
 
-### Q7: DrawCallが多すぎる場合の最適化は？
+### Q7: Draw Callが多すぎます。どのように最適化すればいいですか？
 
-Material Managerを使用:
-```
-1. Tools → @Luna → Gaze Shader Material Manager
-2. [Auto Optimize All] をクリック
-3. 同じテクスチャで共有マテリアルを生成
-4. シーン内のマテリアルを自動置換
-```
-DrawCallが大幅に減少します。
-
-### Q8: インスペクタで設定変更が反映されない？
+**A**: Material Managerを使用します：
 
 ```
-1. シェーダーがまだコンパイル中
-2. マテリアルがレンダラーに正しく割り当てられていない
-3. キャッシュ問題（Library/ShaderCacheを削除）
-4. Play Mode中の変更は失われる（編集モードで行う）
+1. Tools → @Luna → Gaze Shader Material Manager を開く
+2. [すべて自動最適化] をクリック
+3. システムが同じテクスチャに対して共有マテリアルインスタンスを作成します
+4. シーン内の重複したマテリアルを自動的に置換します
+
+結果: Draw Callが大幅に減少します
+```
+
+### Q8: Inspectorでパラメータを変更しても反応しませんか？
+
+**A**: 以下の点を確認してください：
+
+```
+1. Shaderが完全にロードされていない
+   └─ しばらく待ってエディタを再起動する
+
+2. マテリアルが正しく適用されていない
+   └─ Rendererで再度適用する
+
+3. 以前の設定がキャッシュされている
+   └─ Library/ShaderCache フォルダを削除する
+
+4. Play Mode 中にパラメータを変更した
+   └─ Play Modeが終了すると変更は失われます
+   └─ 編集モード（Edit Mode）で変更する必要があります
 ```
 
 ---
 
-## 技術的詳細
+## 技術的な詳細
 
-### シェーダー構成
+### Shader アーキテクチャ
 
 ```
+Gaze Shader コア構造:
+
 Vertex Shader:
-├─ ワールド/カメラデータの取得
-├─ 凝視回転行列の算出
-├─ ランダムシード生成
-├─ スケール・回転変化を適用
-└─ 変換後頂点を出力
+├─ ワールド座標とカメラ情報の取得
+├─ 視線回転行列の計算
+├─ オブジェクトシードの生成（ランダム性に使用）
+├─ スケール/回転バリエーションの適用
+└─ 変換された頂点の出力
 
 Fragment Shader:
-├─ 現在フレームインデックス計算
-│   ├─ 時間とFPSから算出
-│   ├─ 再生モードロジック含む
-│   └─ 距離速度制御を考慮
-├─ テクスチャサンプリング
-│   ├─ TextureArray: UNITY_SAMPLE_TEX2DARRAY
-│   └─ SpriteSheet: UV計算
-├─ ライティング計算（任意）
-│   ├─ 法線マップサンプル
-│   ├─ 鏡面反射計算
-│   └─ ライトボリューム統合
-└─ 最終色を出力
+├─ 現在のフレームインデックスの計算
+│  ├─ 時間とFPSに基づく
+│  ├─ PlayModeロジックをサポート
+│  └─ 距離速度制御の考慮
+├─ テクスチャのサンプリング
+│  ├─ TextureArrayバージョン: UNITY_SAMPLE_TEX2DARRAY
+│  └─ SpriteSheetバージョン: UVを計算してサンプリング
+├─ ライティングの計算（オプション）
+│  ├─ ノーマルマップのサンプリング
+│  ├─ スペキュラ反射の計算
+│  └─ Light Volume 統合
+└─ 最終カラーの出力
 ```
 
 ### 主要アルゴリズム
 
-#### 1. 凝視追跡
+#### 1. 視線追従 (Gaze Tracking)
 
 ```glsl
+// 簡易バージョン
 float3 cameraDir = normalize(cameraPos - worldPos);
 float3x3 rotMatrix = RotateTowardsCamera(cameraDir);
 float3 finalPos = mul(rotMatrix, vertexPos);
 ```
 
-回転行列を使用しジンバルロックを回避。軸制限や距離減衰対応。
+**特徴**:
+- ジンバルロックを避けるため、オイラー角ではなく回転行列を使用
+- 多軸追従の選択をサポート
+- 距離減衰の滑らかなトランジション
 
 #### 2. 距離速度制御
 
@@ -675,80 +894,95 @@ float distance = length(worldPos - cameraPos);
 float speedMultiplier;
 
 if (SpeedChangeMode == 1) {
-    speedMultiplier = 1.0 + (1 - distance / maxDist) * rate;
+    // Accelerate: 近いほど速い
+    speedMultiplier = 1.0 + (1 - dist / maxDist) * rate;
 } else if (SpeedChangeMode == 2) {
-    speedMultiplier = 1.0 - (1 - distance / maxDist) * rate;
+    // Decelerate: 近いほど遅い
+    speedMultiplier = 1.0 - (1 - dist / maxDist) * rate;
 }
 
 float adjustedFPS = fps * speedMultiplier;
 ```
 
-#### 3. フレーム計算
+#### 3. フレーム計算 (Frame Calculation)
 
 ```glsl
 float elapsedTime = time - startTime;
 float frameIndex = floor(elapsedTime * adjustedFPS) % totalFrames;
+
+// 異なるPlayModeをサポート
 if (playMode == ONCE) {
     frameIndex = min(frameIndex, totalFrames - 1);
 } else if (playMode == RANDOM) {
+    // ランダムなセグメントを計算
     frameIndex = RandomSegment(seed);
 } else if (playMode == MANUAL) {
     frameIndex = manualFrame;
 }
 ```
 
-#### 4. SpriteSheet UV計算
+#### 4. SpriteSheet UV 計算
 
 ```glsl
 int column = int(frameIndex) % columns;
 int row = int(frameIndex) / columns;
+
 float u = (column + uv.x) / columns;
 float v = (row + uv.y) / rows;
+
 float2 spriteSheetUV = float2(u, v);
 ```
 
-### パフォーマンス
+### パフォーマンスの考慮事項
 
 ```
-TextureArray:
-├─ 長所: 最高性能・メモリ効率
-├─ 短所: 対応プラットフォーム制限
-└─ 基準: 100%
+TextureArray バージョン:
+├─ メリット: 最高のパフォーマンス、最適なメモリ利用
+├─ デメリット: TextureArrayがすべてのプラットフォームでサポートされているとは限らない
+└─ パフォーマンス: 最適 (100% 基準)
 
-SpriteSheet:
-├─ 長所: 幅広い互換性
-├─ 短所: 大きなテクスチャ
-└─ 性能: 約95%
+SpriteSheet バージョン:
+├─ メリット: 互換性が高い、変換が簡単
+├─ デメリット: 1枚の大きなテクスチャがより多くのメモリを消費する可能性がある
+└─ パフォーマンス: 非常に良い (95% 相対)
 
-Cutout:
-├─ 長所: 最速（アルファなし）
-├─ �短所: 不透明のみ
-└─ 性能: 約105%
+Cutout バージョン:
+├─ メリット: パフォーマンスが最も高い（Alphaブレンドなし）
+├─ デメリット: 不透明な画像のみサポート
+└─ パフォーマンス: 最適 (105% 相対、最速)
 ```
 
 ### 互換性
 
 ```
-TextureArray (Gaze Gif):
-├─ Windows/Mac: ✅
-├─ WebGL: ❌
-├─ Android/Quest: ⚠️
-└─ iOS: ❌
+プラットフォームの互換性:
 
-SpriteSheet:
-├─ 全プラットフォーム対応: ✅
+TextureArray (Gaze Gif):
+├─ Windows/Mac: ✅ 完全サポート
+├─ WebGL: ❌ サポートなし
+├─ Android/Quest: ⚠️ 限定的サポート
+└─ iOS: ❌ サポートなし
+
+SpriteSheet (推奨):
+├─ Windows/Mac: ✅ 完全サポート
+├─ WebGL: ✅ 完全サポート
+├─ Android/Quest: ✅ 完全サポート
+└─ iOS: ✅ 完全サポート
 
 Cutout:
-├─ すべてのプラットフォーム: ✅ (最高互換性)
+├─ すべてのプラットフォーム: ✅ 完全サポート
+└─ 最高の互換性
 ```
 
 ---
 
 ## 付録
 
-### クイックプリセット
+### クイックリファレンス
 
-**デフォルト（初心者向け）**:
+#### パラメータのプリセット
+
+**デフォルト設定（初心者推奨）**:
 ```
 FPS: 12
 PlayMode: Loop
@@ -760,18 +994,18 @@ LightingEffect: ON
 UseLightVolume: ON
 ```
 
-**高性能設定**:
+**高パフォーマンス設定**:
 ```
-SpriteSheet解像度: 512×512
+SpriteSheet 解像度: 512×512
 FPS: 12
 LightingEffect: OFF
 UseNormalMap: OFF
-Gaze: Y軸 (単軸は性能向上)
+Gaze: Y軸 (単軸は全方向よりパフォーマンスが良い)
 ```
 
 **高品質設定**:
 ```
-SpriteSheet解像度: 2048×2048 または TextureArray
+SpriteSheet 解像度: 2048×2048 または TextureArray
 FPS: 24
 LightingEffect: ON
 UseNormalMap: ON
@@ -779,22 +1013,48 @@ NormalStrength: 1.0
 SpecularSharpness: 30
 ```
 
-### ファイル配置
+### ファイルの場所クイックリファレンス
 
 ```
 Assets/@Luna/gaze gif shader/
-├─ Editor/ (全エディタスクリプト + 本ドキュメント)
-├─ Shader/ (3つのシェーダーとlight volume include)
-├─ Scripts/ (UdonGazeGifTrigger.cs)
-├─ logo/ (ソーシャルアイコン)
-└─ README.md
+├─ Editor/
+│  ├─ AuthorInfoDrawer.cs
+│  ├─ GazeGifShaderGUI.cs
+│  ├─ GazeShaderLocalization.cs
+│  ├─ GifToSpriteSheetConverter.cs
+│  ├─ GifToTextureArrayConverter.cs
+│  ├─ MaterialInstanceManager.cs
+│  └─ NormalMapGenerator.cs
+│
+├─ Shader/
+│  ├─ Gaze Gif.shader (TextureArray版)
+│  ├─ Gaze GIF SpriteSheet.shader (推奨)
+│  ├─ Gaze GIF SpriteSheet Cutout.shader (不透明版)
+│  └─ LightVolumes.cginc (VRC 光照体積)
+│
+├─ Scripts/
+│  └─ UdonGazeGifTrigger.cs (VRC Udon スクリプト)
+│
+├─ logo/
+│  ├─ s booth.png
+│  ├─ s x.png
+│  ├─ s b.png
+│  ├─ @咸鱼子Luna.png
+│  └─ Luna_ko.png
+│
+├─ Gaze_Gif_Shader_Summary_cn.md 
+├─ Gaze_Gif_Shader_Summary_en.md
+├─ Gaze_Gif_Shader_Summary_ja.md (このドキュメント)
+└─ README.md (プロジェクト説明)
+
+
 ```
 
-### ソーシャル
+### ソーシャルメディア
 
-- Booth: https://xianyuzi-luna.booth.pm/
-- X (Twitter): https://x.com/lunabxgg
-- Bilibili: https://space.bilibili.com/3546752913247086
+- **Booth**: https://xianyuzi-luna.booth.pm/
+- **X (Twitter)**: https://x.com/lunabxgg
+- **Bilibili**: https://space.bilibili.com/3546752913247086
 
 ---
 
@@ -802,30 +1062,39 @@ Assets/@Luna/gaze gif shader/
 
 ### v1.0 (2026-03-03)
 
-- 初版リリース：全機能、エディタツール、変換ツール、法線マップジェネレータ、マテリアルマネージャ、VRC連携、Udon対応、多言語化、ドキュメントを含む
+**初期リリースバージョン、以下の内容を含む**:
+
+- ✅ 3つのShaderバージョン（TextureArray、SpriteSheet、Cutout）
+- ✅ 完全なEditorツールスイート
+- ✅ GIF変換ツール（TextureArray および SpriteSheet）
+- ✅ ノーマルマップジェネレーター
+- ✅ マテリアルマネージャー
+- ✅ VRC Light Volume 統合
+- ✅ UdonSharp サポートスクリプト
+- ✅ 多言語ローカリゼーション（EN/CN/JA）
+- ✅ 完全なドキュメントとサンプル
 
 ---
 
-### 🛒 商用ライセンス
+### 🛒 商用利用ライセンス (Commercial License)
 
-このGitHubリポジトリのオープンソースコンテンツは**個人の非商用使用のみ**とします（例：非公開VRChatアバター、無料のVRChatワールドなど）。
+このGitHubリポジトリでオープンソースとして公開されているコンテンツは、**個人の無料・非商用利用**（例：プライベートなVRChat Avatarでの使用、または無料のVRChat Worldの公開）にのみ提供されます。
 
-### ⚠️ 商用利用制限
+### ⚠️ 商用利用の制限
 
-このシェーダーを直接または間接的に商業収益活動に使用することは禁止されています。例：
+本シェーダーを直接的または間接的に、いかなる商業的な営利行為に使用することも**固く禁じます**。これには以下が含まれますが、これらに限定されません：
 
-- 有料3Dモデル販売
-- 有償アバターデザイン依頼
-- 有料ワールド/シーン構築
-- その他営利行為
+- 商用3Dモデルの販売
+- 有料のAvatarカスタマイズ依頼
+- 有料のシーン制作
+- その他の商業的営利目的
 
-### 💳 商用ライセンス購入
+### 💳 商用ライセンスの購入
 
-商用プロジェクトや有料作品での利用が必要な場合は、**BOOTH**で商用ライセンスを購入してください：
+商用作品や有料プロジェクトでこのシステムを使用する場合は、**BOOTH** にて商用利用ライセンスを購入してください：
 
-**👉 [商用ライセンスを購入](https://xianyuzi-luna.booth.pm/items/7555039) 👈**
+**👉 [BOOTHでの商用ライセンス購入はこちらをクリック](https://xianyuzi-luna.booth.pm/items/7555039) 👈**
 
 ---
 
-**Gaze Shaderをご利用いただきありがとうございます！
-ご質問はシェーダー右下のロゴから作者のソーシャルへお問い合わせください。**
+**Gaze Shaderをご利用いただきありがとうございます！ご質問がある場合は、シェーダーインターフェース右下の作者ロゴ--@咸鱼子Luna--のソーシャルメディアを通じて作者にご連絡ください。**
