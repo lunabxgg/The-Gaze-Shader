@@ -656,7 +656,7 @@ VRC Light Volume is a tool in VRChat worlds used to add lighting to specific are
 
 ### UdonSharp Script Integration
 
-File: [UdonGazeGifTrigger.cs](UdonGazeGifTrigger.cs)
+File: [UdonGazeGifTrigger.cs](./Scripts/UdonGazeGifTrigger.cs)
 
 **Function**: Synchronizes gaze animation playback time across clients.
 
