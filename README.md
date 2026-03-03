@@ -15,7 +15,7 @@
 ## 📖 User Manual
 
 To help you get started quickly, the layout of this manual perfectly matches the functional areas in the Material Inspector panel. Please read along while checking the UI.
-*If you need a more detailed manual, please read [Gaze_Gif_Shader_Summary.md](The-Gaze-Shader/Gaze_Gif_Shader_Summary_en.md).*
+*If you need a more detailed manual, please read [Gaze_Gif_Shader_Summary.md](./Gaze_Gif_Shader_Summary_en.md).*
 
 ### 1. Resource Section
 This is your first stop for importing animation resources.
