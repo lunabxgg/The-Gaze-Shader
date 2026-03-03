@@ -374,7 +374,7 @@ _FixTransp (Toggle, 默认: OFF)
 #### 主要功能区域
 
 **1. 作者信息区**
-- 显示 Luna 的社交媒体链接
+- 显示 咸鱼子Luna 的社交媒体链接
 - Booth、X (Twitter)、Bilibili
 
 **2. Header 区**

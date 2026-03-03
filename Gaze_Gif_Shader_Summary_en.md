@@ -1024,9 +1024,7 @@ Assets/@Luna/gaze gif shader/
 │  ├─ GifToSpriteSheetConverter.cs
 │  ├─ GifToTextureArrayConverter.cs
 │  ├─ MaterialInstanceManager.cs
-│  ├─ NormalMapGenerator.cs
-│  └─ Gaze_Gif_Shader_Summary.md (This Document)
-│
+│  └─ NormalMapGenerator.cs
 ├─ Shader/
 │  ├─ Gaze Gif.shader (TextureArray Version)
 │  ├─ Gaze GIF SpriteSheet.shader (Recommended)
@@ -1043,6 +1041,9 @@ Assets/@Luna/gaze gif shader/
 │  ├─ @咸鱼子Luna.png
 │  └─ Luna_ko.png
 │
+├─ Gaze_Gif_Shader_Summary_cn.md 
+├─ Gaze_Gif_Shader_Summary_en.md (This Document)
+├─ Gaze_Gif_Shader_Summary_ja.md
 └─ README.md (Project Info)
 ```
 
