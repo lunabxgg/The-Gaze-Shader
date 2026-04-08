@@ -61,9 +61,10 @@ Shader "@Luna/Gaze GIF SpriteSheet Cutout"
         [Toggle(_USE_LIGHT_VOLUME)]_UseLightVolume ("Use Light Volume", Float) = 1
         _LightVolumeIntensity ("Light Volume Intensity", Range(0, 2)) = 1.0
 
-        [Header(Display Fix)]
         [Toggle(_BACKFACE_CULLING)]_BackfaceCulling ("Backface Culling", Float) = 1
         [Toggle(_FIX_TRANSPARENCY)]_FixTransp ("Fix Artifacts", Float) = 0
+
+        [IntRange] _CustomRenderQueue ("手动渲染深度 (Queue)", Range(2000, 5000)) = 2800
     }
 
     SubShader
@@ -468,6 +469,7 @@ Shader "@Luna/Gaze GIF SpriteSheet Cutout"
             #endif
 
             UNITY_APPLY_FOG(i.fogCoord, col);
+            col.a = 1.0; 
             return col;
         }
 

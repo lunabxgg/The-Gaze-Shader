@@ -67,6 +67,8 @@ Shader "@Luna/Gaze Gif"
        
         _LightVolumeIntensity ("Light Volume Intensity", Range(0, 2)) = 1.0
         [Toggle(_USE_LIGHT_VOLUME)]_UseLightVolume ("Use Light Volume", Float) = 1
+
+        [IntRange] _CustomRenderQueue ("渲染深度", Range(2000, 5000)) = 2800
     }
 
     SubShader

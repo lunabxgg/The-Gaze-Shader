@@ -214,6 +214,10 @@ namespace Luna.GazeShader
 
             public static string FlipHorizontal => GetString("FLIP_HORIZONTAL");
             public static string FlipVertical => GetString("FLIP_VERTICAL");
+            
+            // 渲染深度
+            public static string RenderQueue => GetString("RENDER_QUEUE");
+            public static string RenderQueueTooltip => GetString("RENDER_QUEUE_TOOLTIP");
 
             // 添加GetString方法
             public static string GetString(string key)
@@ -703,6 +707,14 @@ namespace Luna.GazeShader
             ["AUTO_DESYNC_NO_OBJECTS"] = new[] { "No objects found using the current material in the scene.", "场景里没有找到使用当前材质球的物体。", "現在のマテリアルを使用しているオブジェクトがシーンに見つかりませんでした。" },
             ["PROMPT"] = new[] { "Notice", "提示", "通知" },
             ["OK"] = new[] { "OK", "确定", "確認" },
+
+            // 渲染深度
+            ["RENDER_QUEUE"] = new[] { "Render Queue", "渲染深度", "描画順 (Queue)" },
+            ["RENDER_QUEUE_TOOLTIP"] = new[] { 
+                "Manually adjust the rendering order. Higher values draw on top of lower ones (e.g., UI Text is usually at 3000).", 
+                "手动调整渲染顺序。数值较大的对象将绘制在数值较小的对象之上（例如文字通常为3000）。", 
+                "描画順序を手動で調整します。数値が大きいオブジェクトは、数値が小さいオブジェクトの上に描画されます（例えば、テキストは通常3000です）。" 
+            },
         };
         }
 }

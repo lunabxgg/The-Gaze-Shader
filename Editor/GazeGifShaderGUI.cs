@@ -284,52 +284,60 @@ public class GazeGifShaderGUI : ShaderGUI
 
     private void DrawAdvancedSection()
     {
-        EditorGUILayout.BeginVertical(GUI.skin.box);
-        string uvTitle = GazeShaderLocalization.Advanced.UVAdjust;
-        EditorGUILayout.LabelField(uvTitle, EditorStyles.boldLabel);
+        EditorGUILayout.BeginVertical(GUI.skin.box); 
+        
+        // 模块 1: UV 调整
+        EditorGUILayout.LabelField(GazeShaderLocalization.Advanced.UVAdjust, EditorStyles.boldLabel);
         DrawUVAdjustModule();
+        
         EditorGUILayout.Space(10);
-        string displayFixTitle = GazeShaderLocalization.Advanced.DisplayFix;
-        EditorGUILayout.LabelField(displayFixTitle, EditorStyles.boldLabel);
-        DrawDisplayFixModule();
+        
+        // 模块 2: 显示修复
+        EditorGUILayout.LabelField(GazeShaderLocalization.Advanced.DisplayFix, EditorStyles.boldLabel);
+        DrawDisplayFixModule(); 
+        
         EditorGUILayout.EndVertical();
     }
 
     private void DrawDisplayFixModule()
     {
-        EditorGUILayout.BeginVertical(GUI.skin.box);
+        EditorGUILayout.BeginVertical(GUI.skin.box); 
 
-        // 背面剔除选项
-        string backfaceCullingLabel = GazeShaderLocalization.Advanced.BackfaceCulling;
-        GUIContent backfaceCullingContent = new GUIContent(backfaceCullingLabel,
-            GazeShaderLocalization.Advanced.BackfaceCullingTooltip);
-
-        // 获取背面剔除属性
-        MaterialProperty backfaceCullingProp = FindProperty("_BackfaceCulling", properties);
-
-        EditorGUI.BeginChangeCheck();
-        bool newBackfaceCulling = EditorGUILayout.Toggle(backfaceCullingContent, backfaceCullingProp.floatValue > 0.5f);
-        if (EditorGUI.EndChangeCheck())
+        // 1. 背面剔除 
+        MaterialProperty backfaceProp = FindProperty("_BackfaceCulling", properties);
+        if (backfaceProp != null)
         {
-            backfaceCullingProp.floatValue = newBackfaceCulling ? 1.0f : 0.0f;
+            editor.ShaderProperty(backfaceProp, new GUIContent(
+                GazeShaderLocalization.Advanced.BackfaceCulling, 
+                GazeShaderLocalization.Advanced.BackfaceCullingTooltip));
+        }
 
-            if (newBackfaceCulling)
+        // 2. 修复伪影
+        MaterialProperty fixTranspProp = FindProperty("_FixTransp", properties);
+        if (fixTranspProp != null)
+        {
+            editor.ShaderProperty(fixTranspProp, new GUIContent(
+                GazeShaderLocalization.Advanced.FixArtifacts, 
+                GazeShaderLocalization.Advanced.FixArtifactsTooltip));
+        }
+
+        // 3. 渲染深度 
+        MaterialProperty queueProp = FindProperty("_CustomRenderQueue", properties);
+        if (queueProp != null)
+        {
+            EditorGUI.BeginChangeCheck();
+            
+            editor.ShaderProperty(queueProp, new GUIContent(
+                GazeShaderLocalization.Advanced.RenderQueue, 
+                GazeShaderLocalization.Advanced.RenderQueueTooltip));
+            
+            if (EditorGUI.EndChangeCheck())
             {
-                targetMaterial.EnableKeyword("_BACKFACE_CULLING");
-            }
-            else
-            {
-                targetMaterial.DisableKeyword("_BACKFACE_CULLING");
+                targetMaterial.renderQueue = (int)queueProp.floatValue;
             }
         }
 
-        // 修复伪影选项
-        string fixArtifactsLabel = GazeShaderLocalization.Advanced.FixArtifacts;
-        GUIContent fixArtifactsContent = new GUIContent(fixArtifactsLabel,
-            GazeShaderLocalization.Advanced.FixArtifactsTooltip);
-        editor.ShaderProperty(FindProperty("_FixTransp", properties), fixArtifactsContent);
-
-        EditorGUILayout.EndVertical();
+        EditorGUILayout.EndVertical(); 
     }
 
     private void DrawLightingEffectSection()
